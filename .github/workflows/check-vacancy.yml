@@ -20,6 +20,9 @@ jobs:
           pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run check-vacancy.py
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
+          TARGET_DATE: ${{ secrets.TARGET_DATE }}
         run: python check-vacancy.py
 
       - name: Set up git user
