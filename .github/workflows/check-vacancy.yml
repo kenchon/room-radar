@@ -1,0 +1,39 @@
+name: Run check-vacancy.py daily
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 5分おきに実行
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run check-vacancy.py
+        run: python check-vacancy.py
+
+      - name: Set up git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push vacancy log
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LOG_FILE=$(ls vacancy-log-*.json | tail -n 1)
+          if [ -f "$LOG_FILE" ]; then
+            git add "$LOG_FILE"
+            git commit -m "Add vacancy log $LOG_FILE" || echo "No changes to commit"
+            git push origin HEAD:${GITHUB_REF#refs/heads/}
+          fi
