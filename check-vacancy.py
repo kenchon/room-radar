@@ -64,9 +64,19 @@ def check_once() -> bool:
     with open(log_filename, "w", encoding="utf-8") as f:
         json.dump(log_data, f, ensure_ascii=False, indent=2)
 
+    # 通知済み判定用ファイル
+    notified_flag = f"vacancy-notified-{TARGET_DATE}.flag"
+
     if rooms:
+        if os.path.exists(notified_flag):
+            print(f"[{log_data['timestamp']}] {TARGET_DATE} は既に通知済みです")
+            return True
         msg = f"【空き発見】{TARGET_DATE}\n" + " / ".join(rooms) + f"\n{URL}"
         line_broadcast(msg)
+        # 通知済みフラグファイルを作成
+        with open(notified_flag, "w") as f:
+            f.write(log_data["timestamp"])
+        print(f"[{log_data['timestamp']}] {TARGET_DATE} の空室を通知しました")
         return True
     else:
         ts = log_data["timestamp"]
