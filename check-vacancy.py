@@ -9,6 +9,7 @@ URL = "https://sec.489.jp/rga/30/reserve/plan?adult=4"
 # GitHub Actionsのシークレットから取得
 LINE_TOKEN = os.environ.get("LINE_TOKEN")
 TARGET_DATE = os.environ.get("TARGET_DATE")
+TARGET_DATE = "2025-09-27"
 
 def fetch_html() -> str:
     r = requests.get(URL, headers={"User-Agent":"Mozilla/5.0"}, timeout=30)
