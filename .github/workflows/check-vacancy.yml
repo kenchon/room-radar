@@ -2,7 +2,7 @@ name: Run check-vacancy.py daily
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # 5分おきに実行
+    #- cron: '*/5 * * * *'  # 5分おきに実行
   workflow_dispatch:
 
 jobs:
